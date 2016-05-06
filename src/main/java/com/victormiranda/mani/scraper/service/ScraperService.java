@@ -5,6 +5,7 @@ import com.victormiranda.mani.bean.SynchronizationRequest;
 import com.victormiranda.mani.bean.SynchronizationResult;
 import com.victormiranda.mani.scraper.SynchronizationException;
 
+@FunctionalInterface
 public interface ScraperService {
 
     SynchronizationResult scrape(SynchronizationRequest syncRequest) throws SynchronizationException;
