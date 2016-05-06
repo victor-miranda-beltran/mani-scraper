@@ -118,6 +118,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.3</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.victormiranda.mani</groupId>
             <artifactId>manibeans</artifactId>
             <version>1.0.1-SNAPSHOT</version>

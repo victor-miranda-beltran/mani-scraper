@@ -1,5 +1,4 @@
-package com.victormiranda.mani.scraper;
-
+package com.victormiranda.mani.scraper.exception;
 
 public class SynchronizationException extends Exception {
 
