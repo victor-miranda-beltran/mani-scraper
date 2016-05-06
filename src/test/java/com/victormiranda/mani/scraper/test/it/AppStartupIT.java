@@ -15,7 +15,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @IntegrationTest("server.port:0")
 public class AppStartupIT {
 
-
     @Test
     public void testStartup() {
         Assert.assertTrue(true);

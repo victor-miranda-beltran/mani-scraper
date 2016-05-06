@@ -11,6 +11,7 @@ import java.util.HashSet;
 @Service
 public final class ScraperServiceImpl implements ScraperService {
 
+    @Override
     public SynchronizationResult scrape(SynchronizationRequest syncRequest)
             throws SynchronizationException {
 
