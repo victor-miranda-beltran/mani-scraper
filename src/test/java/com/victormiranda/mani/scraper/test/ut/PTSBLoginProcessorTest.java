@@ -6,7 +6,7 @@ import com.victormiranda.mani.bean.ptsb.PTSBCredentials;
 import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.exception.LoginException;
 import com.victormiranda.mani.scraper.exception.SynchronizationException;
-import com.victormiranda.mani.scraper.service.processor.ptsb.PTSBLoginProcessor;
+import com.victormiranda.mani.scraper.processor.ptsb.PTSBLoginProcessor;
 import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.junit.Assert;
