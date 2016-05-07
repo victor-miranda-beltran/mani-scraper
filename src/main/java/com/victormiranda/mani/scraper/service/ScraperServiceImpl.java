@@ -9,6 +9,7 @@ import com.victormiranda.mani.scraper.exception.LoginException;
 import com.victormiranda.mani.scraper.exception.SynchronizationException;
 import com.victormiranda.mani.scraper.processor.AccountProcessor;
 import com.victormiranda.mani.scraper.processor.LoginProcessor;
+import com.victormiranda.mani.scraper.processor.TransactionProcessor;
 import com.victormiranda.mani.scraper.type.ScraperProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -36,13 +37,17 @@ public final class ScraperServiceImpl implements ScraperService {
         final ScraperProvider scraperProvider =
                 ScraperProvider.getById(syncRequest.getCredentials().getBankProvider().name());
 
-        final AccountProcessor accountProcessor = applicationContext.getBean(scraperProvider.getAccountProcessor());
-
         final LoginProcessor loginProcessor = applicationContext.getBean(scraperProvider.getLoginProcessor());
+        final AccountProcessor accountProcessor = applicationContext.getBean(scraperProvider.getAccountProcessor());
+        final TransactionProcessor transactionProcessor = applicationContext.getBean(scraperProvider.getTramsactionProcessor());
 
         final NavigationSession navigationSession = loginProcessor.processLogin(syncRequest.getCredentials());
 
         final Set<AccountInfo> accountsDetected = accountProcessor.processAccounts(navigationSession);
+
+        for (AccountInfo accountInfo : accountsDetected) {
+            accountInfo.getTransactions().addAll(transactionProcessor.processTransactions(accountInfo, navigationSession));
+        }
 
         return new SynchronizationResult(accountsDetected, !accountsDetected.isEmpty());
     }

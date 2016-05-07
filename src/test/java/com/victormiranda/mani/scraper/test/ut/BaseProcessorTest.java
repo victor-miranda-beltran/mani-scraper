@@ -1,6 +1,7 @@
 package com.victormiranda.mani.scraper.test.ut;
 
 
+import com.victormiranda.mani.scraper.processor.BaseProcessor;
 import com.victormiranda.mani.scraper.type.PTSBUrl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,6 +22,7 @@ public class BaseProcessorTest {
         mockPages.put(PTSBUrl.LOGIN_FIRST_STEP_SEND.url, "/ptsb/secondlogin.html");
         mockPages.put(PTSBUrl.LOGIN_FINISH.url, "/ptsb/dashboard.html");
         mockPages.put(PTSBUrl.DASHBOARD.url, "/ptsb/dashboard.html");
+        mockPages.put(PTSBUrl.ACCOUNT_DETAILS.url, "/ptsb/account-details.html");
         mockPages.put(PTSBUrl.ACCOUNT_DETAILS.url, "/ptsb/account-details.html");
         mockPages.put(PTSBUrl.ACCOUNT_DETAILS_EXPANDED.url, "/ptsb/account-details.html");
         mockPages.put(PTSBUrl.ACCOUNT_PENDINGS.url, "/ptsb/pendings.html");
@@ -44,6 +46,10 @@ class ProcessorMock  {
         Document documentFromString = null;
 
         try {
+            Map<String, String> uidParam = new HashMap<>();
+            uidParam.put("1234", "{uid}");
+
+            url = BaseProcessor.expandURL(url, uidParam);
             documentFromString = BaseProcessorTest.getDocumentFromString(BaseProcessorTest.mockPages.get(url));
             return documentFromString;
         } catch (IOException e) {

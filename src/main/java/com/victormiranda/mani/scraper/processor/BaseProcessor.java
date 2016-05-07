@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 public class BaseProcessor {
 
@@ -40,7 +42,7 @@ public class BaseProcessor {
 
     public static BigDecimal money(String text) {
         if (!Validate.notEmpty(text)) {
-            throw new IllegalArgumentException("Incorrect value " + text);
+            return BigDecimal.ZERO;
         }
 
         try {
@@ -49,6 +51,24 @@ public class BaseProcessor {
             LOGGER.error("Error processing " + text);
             throw e;
         }
+    }
+
+    public static URL expandURL(final URL url, final Map<String, String> params) {
+        URL destination = null;
+
+        String urlDestination = url.toString();
+
+        for (Map.Entry<String, String> e : params.entrySet()) {
+            urlDestination = urlDestination.replace(e.getKey(), e.getValue());
+        }
+
+        try {
+            destination = new URL(urlDestination);
+        } catch (MalformedURLException e) {
+            LOGGER.error(e.getLocalizedMessage(), e);
+        }
+
+        return destination;
     }
 
     private void delay(final long i) {
