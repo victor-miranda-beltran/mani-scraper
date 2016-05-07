@@ -5,7 +5,7 @@ import java.net.URL;
 import java.time.LocalDate;
 
 public enum PTSBUrl {
-    LOGIN_FIRST_STEP_GET("https://www.oasdaspen24.ie/online/login/"),
+    LOGIN_FIRST_STEP_GET("https://www.open24.ie/online/login/"),
     LOGIN_FIRST_STEP_SEND("https://www.open24.ie/online"),
     LOGIN_FINISH("https://www.open24.ie/online/Login/Step2"),
     DASHBOARD("https://www.open24.ie/online/Accounts/Overview/Index"),

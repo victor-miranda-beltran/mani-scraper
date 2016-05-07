@@ -28,6 +28,7 @@ public class BaseProcessor {
             final Connection.Response res = Jsoup.connect(url.toString())
                     .followRedirects(true)
                     .method(method)
+                    .data(navigationSession.getParams())
                     .cookies(navigationSession.getCookies())
                     .execute();
 
