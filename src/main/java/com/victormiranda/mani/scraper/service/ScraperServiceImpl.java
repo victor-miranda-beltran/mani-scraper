@@ -30,7 +30,7 @@ public final class ScraperServiceImpl implements ScraperService {
 
     @Override
     public SynchronizationResult scrape(SynchronizationRequest syncRequest)
-            throws SynchronizationException, LoginException {
+            throws SynchronizationException {
 
         validateRequest(syncRequest);
 
@@ -41,7 +41,13 @@ public final class ScraperServiceImpl implements ScraperService {
         final AccountProcessor accountProcessor = applicationContext.getBean(scraperProvider.getAccountProcessor());
         final TransactionProcessor transactionProcessor = applicationContext.getBean(scraperProvider.getTramsactionProcessor());
 
-        final NavigationSession navigationSession = loginProcessor.processLogin(syncRequest.getCredentials());
+        final NavigationSession navigationSession;
+
+        try {
+            navigationSession = loginProcessor.processLogin(syncRequest.getCredentials());
+        } catch (LoginException loginException) {
+            throw new SynchronizationException(loginException);
+        }
 
         final Set<AccountInfo> accountsDetected = accountProcessor.processAccounts(navigationSession);
 

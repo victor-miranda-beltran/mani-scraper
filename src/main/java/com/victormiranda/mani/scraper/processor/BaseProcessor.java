@@ -77,6 +77,7 @@ public class BaseProcessor {
             Thread.sleep((long) (i * Math.random()));
         } catch (InterruptedException e) {
             LOGGER.error("Error in delay", e);
+            Thread.currentThread().interrupt();
         }
     }
 }

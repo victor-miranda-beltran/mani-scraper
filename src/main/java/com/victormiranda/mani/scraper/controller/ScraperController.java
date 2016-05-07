@@ -2,16 +2,12 @@ package com.victormiranda.mani.scraper.controller;
 
 import com.victormiranda.mani.bean.SynchronizationRequest;
 import com.victormiranda.mani.bean.SynchronizationResult;
-import com.victormiranda.mani.scraper.exception.LoginException;
 import com.victormiranda.mani.scraper.exception.SynchronizationException;
 import com.victormiranda.mani.scraper.service.ScraperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 public class ScraperController {
@@ -25,7 +21,7 @@ public class ScraperController {
 
     @RequestMapping("/scrape")
     public SynchronizationResult scrape(@RequestBody  final SynchronizationRequest synchronizationRequest)
-            throws LoginException, SynchronizationException {
+            throws SynchronizationException {
 
         return scraperService.scrape(synchronizationRequest);
     }
