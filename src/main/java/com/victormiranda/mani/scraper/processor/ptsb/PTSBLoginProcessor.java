@@ -71,12 +71,13 @@ public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor 
 
         final int[] requestedPin = (int[]) navigationSession.getPrivateParams().get("requested-pin");
 
-        navigationSession.getParams().put("login-digit-1", credentials.getPin().charAt(requestedPin[0] - 1) + "");
-        navigationSession.getParams().put("login-digit-2", credentials.getPin().charAt(requestedPin[1] - 1) + "");
-        navigationSession.getParams().put("login-digit-3", credentials.getPin().charAt(requestedPin[2] - 1) + "");
+        final String[] pin = credentials.getPin().split("");
 
+        navigationSession.getParams().put("login-digit-1", pin[requestedPin[0] - 1]);
+        navigationSession.getParams().put("login-digit-2", pin[requestedPin[1] - 1]);
+        navigationSession.getParams().put("login-digit-3", pin[requestedPin[2] - 1]);
 
-        final Document document = parse(LOGIN_FINISH.url, Connection.Method.POST, navigationSession);
+        parse(LOGIN_FINISH.url, Connection.Method.POST, navigationSession);
 
         navigationSession.getParams().remove("login-digit-1");
         navigationSession.getParams().remove("login-digit-2");
@@ -90,7 +91,7 @@ public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor 
             return Integer.valueOf(digit.replaceAll("\\D+",""));
         } catch (Exception e) {
             LOG.error("Error processing document \n" + doc);
-            throw new IllegalStateException("wtf!");
+            throw new IllegalStateException("wtf!", e);
         }
     }
 }

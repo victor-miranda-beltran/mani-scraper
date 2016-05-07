@@ -9,9 +9,10 @@ public final class Validate {
     }
 
     public static boolean notEmpty(final String ... strings) {
-
         for (String string : strings) {
-            if (!notEmpty(string)) return  false;
+            if (!notEmpty(string)) {
+                return  false;
+            }
         }
 
         return true;
