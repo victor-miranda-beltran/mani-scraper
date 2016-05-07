@@ -35,14 +35,11 @@ public class PTSBAccountProcessorTest extends BaseProcessorTest{
         }
     }
 
-    private class PTSBAccountProcessorMock extends PTSBAccountProcessor {
-
-        public Document parse(URL url, Connection.Method method, NavigationSession navigationSession) {
-            return ProcessorMock.parse(url);
-        }
-    }
-
-
 }
 
+class PTSBAccountProcessorMock extends PTSBAccountProcessor {
 
+    public Document parse(URL url, Connection.Method method, NavigationSession navigationSession) {
+        return ProcessorMock.parse(url);
+    }
+}

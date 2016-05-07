@@ -57,11 +57,12 @@ public class PTSBLoginProcessorTest extends BaseProcessorTest{
         Assert.assertEquals(((int [])navigationSession.getPrivateParams().get("requested-pin")).length, 3);
     }
 
-    private class PTSBLoginProcessorMock extends PTSBLoginProcessor {
+}
 
-        public Document parse(URL url, Connection.Method method, NavigationSession navigationSession) {
-            return ProcessorMock.parse(url);
-        }
+class PTSBLoginProcessorMock extends PTSBLoginProcessor {
+
+    public Document parse(URL url, Connection.Method method, NavigationSession navigationSession) {
+        return ProcessorMock.parse(url);
     }
 }
 

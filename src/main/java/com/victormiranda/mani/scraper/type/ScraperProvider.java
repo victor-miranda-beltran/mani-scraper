@@ -35,13 +35,13 @@ public enum ScraperProvider {
         return tramsactionProcessor;
     }
 
-    public static ScraperProvider getById(final String id) {
+    public static ScraperProvider getByName(final String name) {
         for (ScraperProvider scraperProvider : ScraperProvider.values()) {
-            if (scraperProvider.name().equals(id)) {
+            if (scraperProvider.name().equals(name)) {
                 return scraperProvider;
             }
         }
 
-        throw new IllegalArgumentException("Scraper not known : " + id);
+        throw new IllegalArgumentException("Scraper not known : " + name);
     }
 }

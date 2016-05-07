@@ -50,14 +50,12 @@ public class PTSBTransactionProcessorTest extends BaseProcessorTest{
         Assert.assertEquals(transactionWithDateInDescription.getDate(), LocalDate.of(2016,4,2));
     }
 
-    private class PTSBTransactionProcessorMock extends PTSBTransactionProcessor {
-
-        public Document parse(URL url, Connection.Method method, NavigationSession navigationSession) {
-            return ProcessorMock.parse(url);
-        }
-    }
-
-
 }
 
+class PTSBTransactionProcessorMock extends PTSBTransactionProcessor {
+
+    public Document parse(URL url, Connection.Method method, NavigationSession navigationSession) {
+        return ProcessorMock.parse(url);
+    }
+}
 

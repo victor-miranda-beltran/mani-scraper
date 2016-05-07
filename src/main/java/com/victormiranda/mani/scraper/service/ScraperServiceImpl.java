@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -35,7 +36,7 @@ public final class ScraperServiceImpl implements ScraperService {
         validateRequest(syncRequest);
 
         final ScraperProvider scraperProvider =
-                ScraperProvider.getById(syncRequest.getCredentials().getBankProvider().name());
+                ScraperProvider.getByName(syncRequest.getCredentials().getBankProvider().name());
 
         final LoginProcessor loginProcessor = applicationContext.getBean(scraperProvider.getLoginProcessor());
         final AccountProcessor accountProcessor = applicationContext.getBean(scraperProvider.getAccountProcessor());
@@ -52,7 +53,9 @@ public final class ScraperServiceImpl implements ScraperService {
         final Set<AccountInfo> accountsDetected = accountProcessor.processAccounts(navigationSession);
 
         for (AccountInfo accountInfo : accountsDetected) {
-            accountInfo.getTransactions().addAll(transactionProcessor.processTransactions(accountInfo, navigationSession));
+            if (isUpdateNeeded(accountInfo, syncRequest.getAccounts())) {
+                accountInfo.getTransactions().addAll(transactionProcessor.processTransactions(accountInfo, navigationSession));
+            }
         }
 
         return new SynchronizationResult(accountsDetected, !accountsDetected.isEmpty());
@@ -68,6 +71,16 @@ public final class ScraperServiceImpl implements ScraperService {
         if (syncRequest.getCredentials() == null) {
             throw new SynchronizationException("empty credentials");
         }
+    }
+
+    private boolean isUpdateNeeded(final AccountInfo accountInfo, final Set<AccountInfo> knownAccounts) {
+        final Optional<AccountInfo> knownAccount = knownAccounts.stream()
+                .filter(a -> accountInfo.getAccountNumber().equals(a.getAccountNumber()))
+                .findFirst();
+
+        return !knownAccount.isPresent() ||
+                !knownAccount.get().getAvailableBalance().equals(accountInfo.getAvailableBalance()) ||
+                !knownAccount.get().getCurrentBalance().equals(accountInfo.getCurrentBalance());
     }
 
 }

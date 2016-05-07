@@ -1,6 +1,8 @@
 package com.victormiranda.mani.scraper.test.ut;
 
 
+import com.victormiranda.mani.bean.Credentials;
+import com.victormiranda.mani.bean.ptsb.PTSBCredentials;
 import com.victormiranda.mani.scraper.processor.BaseProcessor;
 import com.victormiranda.mani.scraper.type.PTSBUrl;
 import org.jsoup.Jsoup;
@@ -16,6 +18,7 @@ import java.util.Map;
 public class BaseProcessorTest {
 
     public static final Map<URL, String> mockPages = new HashMap<>();
+    public static final Credentials DEMO_CREDENTIALS  = new PTSBCredentials("user", "password", "123456");
 
     static {
         mockPages.put(PTSBUrl.LOGIN_FIRST_STEP_GET.url, "/ptsb/firstlogin.html");
@@ -42,15 +45,14 @@ public class BaseProcessorTest {
 
 class ProcessorMock  {
 
-    public static Document parse(URL url) {
+    public static Document parse(final URL url) {
         Document documentFromString = null;
 
         try {
-            Map<String, String> uidParam = new HashMap<>();
-            uidParam.put("1234", "{uid}");
+            final String urlProcessedStr = url.toString().replaceAll("(.*accountId=)(.*)","$1{uid}");
+            final URL urlProcessed = new URL(urlProcessedStr);
 
-            url = BaseProcessor.expandURL(url, uidParam);
-            documentFromString = BaseProcessorTest.getDocumentFromString(BaseProcessorTest.mockPages.get(url));
+            documentFromString = BaseProcessorTest.getDocumentFromString(BaseProcessorTest.mockPages.get(urlProcessed));
             return documentFromString;
         } catch (IOException e) {
             e.printStackTrace();
