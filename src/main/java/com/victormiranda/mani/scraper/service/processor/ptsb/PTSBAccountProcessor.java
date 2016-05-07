@@ -20,10 +20,11 @@ import static com.victormiranda.mani.scraper.type.PTSBUrl.*;
 @Service
 public class PTSBAccountProcessor extends BaseProcessor implements AccountProcessor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PTSBAccountProcessor.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PTSBAccountProcessor.class.getName());
 
     @Override
     public Set<AccountInfo> processAccounts(final NavigationSession navigationSession) {
+        LOGGER.info("Processing accounts");
 
         return new HashSet<>();
     }

@@ -7,8 +7,6 @@ import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.exception.LoginException;
 import com.victormiranda.mani.scraper.service.processor.BaseProcessor;
 import com.victormiranda.mani.scraper.service.processor.LoginProcessor;
-import static com.victormiranda.mani.scraper.type.PTSBUrl.*;
-
 import com.victormiranda.mani.scraper.util.Validate;
 import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
@@ -17,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Validation;
+import static com.victormiranda.mani.scraper.type.PTSBUrl.*;
 
 @Service
 public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor {
