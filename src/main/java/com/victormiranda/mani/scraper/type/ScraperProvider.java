@@ -1,10 +1,10 @@
 package com.victormiranda.mani.scraper.type;
 
 
-import com.victormiranda.mani.scraper.service.processor.AccountProcessor;
-import com.victormiranda.mani.scraper.service.processor.LoginProcessor;
-import com.victormiranda.mani.scraper.service.processor.ptsb.PTSBAccountProcessor;
-import com.victormiranda.mani.scraper.service.processor.ptsb.PTSBLoginProcessor;
+import com.victormiranda.mani.scraper.processor.AccountProcessor;
+import com.victormiranda.mani.scraper.processor.LoginProcessor;
+import com.victormiranda.mani.scraper.processor.ptsb.PTSBAccountProcessor;
+import com.victormiranda.mani.scraper.processor.ptsb.PTSBLoginProcessor;
 
 public enum ScraperProvider {
     PTSB(PTSBLoginProcessor.class, PTSBAccountProcessor.class);

@@ -1,4 +1,4 @@
-package com.victormiranda.mani.scraper.service.processor;
+package com.victormiranda.mani.scraper.processor;
 
 import com.victormiranda.mani.scraper.bean.NavigationSession;
 import org.jsoup.Connection;
