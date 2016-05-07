@@ -16,12 +16,6 @@ public enum PTSBUrl {
 
     public final URL url;
 
-    public static PTSBUrl getURL(final LocalDate lastSync) {
-        return lastSync == null || lastSync.isBefore(LocalDate.now().minusMonths(1))
-                ? PTSBUrl.ACCOUNT_DETAILS_EXPANDED
-                : PTSBUrl.ACCOUNT_DETAILS;
-    }
-
     PTSBUrl(String url) {
         URL url1;
         try {
@@ -31,4 +25,11 @@ public enum PTSBUrl {
         }
         this.url = url1;
     }
+
+    public static PTSBUrl getURL(final LocalDate lastSync) {
+        return lastSync == null || lastSync.isBefore(LocalDate.now().minusMonths(1))
+                ? PTSBUrl.ACCOUNT_DETAILS_EXPANDED
+                : PTSBUrl.ACCOUNT_DETAILS;
+    }
+
 }
