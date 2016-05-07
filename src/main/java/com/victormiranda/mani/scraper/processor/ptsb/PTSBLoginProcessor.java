@@ -1,23 +1,23 @@
-package com.victormiranda.mani.scraper.service.processor.ptsb;
+package com.victormiranda.mani.scraper.processor.ptsb;
 
 
 import com.victormiranda.mani.bean.Credentials;
 import com.victormiranda.mani.bean.ptsb.PTSBCredentials;
 import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.exception.LoginException;
-import com.victormiranda.mani.scraper.service.processor.BaseProcessor;
-import com.victormiranda.mani.scraper.service.processor.LoginProcessor;
+import com.victormiranda.mani.scraper.processor.BaseProcessor;
+import com.victormiranda.mani.scraper.processor.LoginProcessor;
 import com.victormiranda.mani.scraper.util.Validate;
 import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import static com.victormiranda.mani.scraper.type.PTSBUrl.*;
 
-@Service
+@Component
 public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(PTSBLoginProcessor.class.getName());

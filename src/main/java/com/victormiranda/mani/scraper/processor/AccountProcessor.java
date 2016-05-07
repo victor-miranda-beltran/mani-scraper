@@ -1,4 +1,4 @@
-package com.victormiranda.mani.scraper.service.processor;
+package com.victormiranda.mani.scraper.processor;
 
 
 import com.victormiranda.mani.bean.AccountInfo;
