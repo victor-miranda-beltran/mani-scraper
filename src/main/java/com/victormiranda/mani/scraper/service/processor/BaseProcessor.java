@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class BaseProcessor {
 
-    public final long DEFAULT_DELAY_BETWEEN_REQUESTS = 2500;
+    public static final long DEFAULT_DELAY_BETWEEN_REQUESTS = 2500;
 
     private static final Logger LOG = LoggerFactory.getLogger(BaseProcessor.class.getName());
 
