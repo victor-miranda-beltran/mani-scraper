@@ -17,6 +17,7 @@ import java.util.Map;
 public class BaseProcessor {
 
     public static final long DEFAULT_DELAY_BETWEEN_REQUESTS = 2500;
+    public static final int DEFAULT_TIMEOUT = 10000;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseProcessor.class.getName());
 
@@ -29,6 +30,7 @@ public class BaseProcessor {
             final Connection.Response res = Jsoup.connect(url.toString())
                     .followRedirects(true)
                     .method(method)
+                    .timeout(DEFAULT_TIMEOUT)
                     .data(navigationSession.getParams())
                     .cookies(navigationSession.getCookies())
                     .execute();
