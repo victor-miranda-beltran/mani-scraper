@@ -88,15 +88,15 @@ public final class ScraperServiceImpl implements ScraperService {
                 .filter(a -> accountInfo.getAccountNumber().equals(a.getAccountNumber()))
                 .findFirst();
 
-        boolean isNeeded = !knownAccount.isPresent() ||
+        final boolean isNeeded = !knownAccount.isPresent() ||
                 !knownAccount.get().getAvailableBalance().equals(accountInfo.getAvailableBalance()) ||
                 !knownAccount.get().getCurrentBalance().equals(accountInfo.getCurrentBalance());
 
-        LOGGER.info("Account " + accountInfo.getName() + " " + isNeeded);
+        LOGGER.info("Account " + accountInfo.getName() + " Update needed:" + isNeeded);
 
         knownAccount.ifPresent(ac ->        {
             LOGGER.info("Old balance = " + ac.getAvailableBalance() + " " + ac.getCurrentBalance());
-            LOGGER.info("Old balance = " + accountInfo.getAvailableBalance() + " " + accountInfo.getCurrentBalance());
+            LOGGER.info("New balance = " + accountInfo.getAvailableBalance() + " " + accountInfo.getCurrentBalance());
         });
 
         return isNeeded;
