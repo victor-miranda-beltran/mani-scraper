@@ -3,7 +3,6 @@ package com.victormiranda.mani.scraper.processor;
 
 import com.victormiranda.mani.bean.AccountInfo;
 import com.victormiranda.mani.scraper.bean.LoggedNavigationSession;
-import com.victormiranda.mani.scraper.bean.NavigationSession;
 
 import java.util.Set;
 

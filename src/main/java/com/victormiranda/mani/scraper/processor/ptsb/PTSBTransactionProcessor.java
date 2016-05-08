@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Component
 public class PTSBTransactionProcessor extends BaseProcessor implements TransactionProcessor {
@@ -51,33 +52,60 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
         final Elements rawTransactions = document.select("table.header-big tbody tr");
 
         for (Element e : rawTransactions) {
-            final String transactionUID = e.attr("data-uid");
-            final String description = e.select(".desc").text();
-            final String valIn = e.select("[data-money=in]").text();
-            final String valOut = e.select("[data-money=out]").text();
-
-            final TransactionFlow transactionFlow;
-            final BigDecimal transactionAm;
-
-            if (valIn.length() == 0) {
-                transactionFlow = TransactionFlow.OUT;
-                transactionAm = BaseProcessor.money(valOut);
-            } else {
-                transactionFlow = TransactionFlow.IN;
-                transactionAm = BaseProcessor.money(valIn);
-            }
-
-            final LocalDate transactionDate = processDate(e.select(".date").text(), description);
-
-            final Transaction transactionProcessed = new Transaction(
-                    transactionUID, description, transactionDate, transactionFlow, transactionAm, TransactionStatus.NORMAL);
+            final Transaction transactionProcessed = getTransaction(e, TransactionStatus.NORMAL);
 
             LOGGER.info("Processed transaction " + transactionProcessed);
 
             transactions.add(transactionProcessed);
         }
 
+        transactions.addAll(processPendingTransactions(document, navigationSession));
+
         return transactions;
+    }
+
+    private List<Transaction> processPendingTransactions(final Document document, final NavigationSession navigationSession) {
+        final List<Transaction> pendingTransactions = new ArrayList<>();
+
+        final Elements existentPendingCandidates = document.select(".module-sub-nav a");
+        for (Element candidate : existentPendingCandidates) {
+            final String href = candidate.attr("href");
+
+            if (href.contains("PendingTransactions?accountId=") && candidate.text().matches(".*[(][0-9]{1,3}[)]")) {
+                final Document pendingsDoc = parse(PTSBUrl.ACCOUNT_PENDINGS.url, Connection.Method.GET, navigationSession);
+                final Elements rawTransactions = pendingsDoc.select("table tbody tr");
+
+                pendingTransactions.addAll(
+                        rawTransactions.stream()
+                                .map(e -> getTransaction(e, TransactionStatus.PENDING))
+                                .collect(Collectors.toList()));
+            }
+        }
+
+        return pendingTransactions;
+    }
+
+    private Transaction getTransaction(final Element e, final TransactionStatus transactionStatus) {
+        final String transactionUID = e.attr("data-uid");
+        final String description = e.select(".desc").text();
+        final String valIn = e.select("[data-money=in]").text();
+        final String valOut = e.select("[data-money=out]").text();
+
+        final TransactionFlow transactionFlow;
+        final BigDecimal transactionAm;
+
+        if (valIn.length() == 0) {
+            transactionFlow = TransactionFlow.OUT;
+            transactionAm = BaseProcessor.money(valOut);
+        } else {
+            transactionFlow = TransactionFlow.IN;
+            transactionAm = BaseProcessor.money(valIn);
+        }
+
+        final LocalDate transactionDate = processDate(e.select(".date").text(), description);
+
+        return new Transaction(
+                transactionUID, description, transactionDate, transactionFlow, transactionAm, transactionStatus);
     }
 
     private LocalDate processDate(final String dateFromDateField, final String description) {

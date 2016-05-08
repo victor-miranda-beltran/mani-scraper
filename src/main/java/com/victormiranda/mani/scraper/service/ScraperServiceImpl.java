@@ -5,7 +5,6 @@ import com.victormiranda.mani.bean.AccountInfo;
 import com.victormiranda.mani.bean.SynchronizationRequest;
 import com.victormiranda.mani.bean.SynchronizationResult;
 import com.victormiranda.mani.scraper.bean.LoggedNavigationSession;
-import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.exception.LoginException;
 import com.victormiranda.mani.scraper.exception.SynchronizationException;
 import com.victormiranda.mani.scraper.processor.AccountProcessor;

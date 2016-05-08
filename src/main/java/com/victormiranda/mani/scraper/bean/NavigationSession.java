@@ -1,7 +1,5 @@
 package com.victormiranda.mani.scraper.bean;
 
-import org.jsoup.nodes.Document;
-
 import java.util.HashMap;
 import java.util.Map;
 

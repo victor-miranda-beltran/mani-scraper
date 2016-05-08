@@ -2,11 +2,8 @@ package com.victormiranda.mani.scraper.processor.ptsb;
 
 import com.victormiranda.mani.bean.AccountInfo;
 import com.victormiranda.mani.scraper.bean.LoggedNavigationSession;
-import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.processor.AccountProcessor;
 import com.victormiranda.mani.scraper.processor.BaseProcessor;
-import com.victormiranda.mani.scraper.type.PTSBUrl;
-import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;

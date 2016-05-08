@@ -10,6 +10,7 @@ import com.victormiranda.mani.scraper.processor.AccountProcessor;
 import com.victormiranda.mani.scraper.processor.TransactionProcessor;
 import com.victormiranda.mani.scraper.processor.ptsb.PTSBAccountProcessor;
 import com.victormiranda.mani.scraper.processor.ptsb.PTSBTransactionProcessor;
+import com.victormiranda.mani.type.TransactionStatus;
 import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.junit.Assert;
@@ -31,10 +32,19 @@ public class PTSBTransactionProcessorTest extends BaseProcessorTest{
     final NavigationSession navigationSession = new NavigationSession();
 
     @Test
-    public void testFetchAccounts() throws SynchronizationException, IOException, LoginException {
+    public void testFetchTransactions() throws SynchronizationException, IOException, LoginException {
         final List<Transaction> transactions = transactionProcessor.processTransactions(DUMMY_ACCOUNT, navigationSession);
 
         Assert.assertTrue(!transactions.isEmpty());
+    }
+
+    @Test
+    public void testFetchPendingTransactions() throws SynchronizationException, IOException, LoginException {
+        final List<Transaction> transactions = transactionProcessor.processTransactions(DUMMY_ACCOUNT, navigationSession);
+
+        long count = transactions.stream().filter(t -> t.getStatus() == TransactionStatus.PENDING).count();
+
+        Assert.assertTrue(count == 9);
     }
 
     @Test

@@ -2,9 +2,6 @@ package com.victormiranda.mani.scraper.bean;
 
 import org.jsoup.nodes.Document;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class LoggedNavigationSession extends NavigationSession {
 
     private final Document dashboard;
