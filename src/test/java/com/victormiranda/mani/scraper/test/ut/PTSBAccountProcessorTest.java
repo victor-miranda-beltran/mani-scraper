@@ -2,6 +2,7 @@ package com.victormiranda.mani.scraper.test.ut;
 
 
 import com.victormiranda.mani.bean.AccountInfo;
+import com.victormiranda.mani.scraper.bean.LoggedNavigationSession;
 import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.exception.LoginException;
 import com.victormiranda.mani.scraper.exception.SynchronizationException;
@@ -23,7 +24,10 @@ public class PTSBAccountProcessorTest extends BaseProcessorTest{
 
         final AccountProcessor ptsbAccountProcessor = new PTSBAccountProcessorMock();
 
-        final Set<AccountInfo> accountInfos = ptsbAccountProcessor.processAccounts(new NavigationSession());
+        final Document document = getDocumentFromString("/ptsb/dashboard.html");
+        final Set<AccountInfo> accountInfos = ptsbAccountProcessor.processAccounts(
+                new LoggedNavigationSession(new NavigationSession(), document)
+        );
 
         Assert.assertEquals(accountInfos.size(), 4);
 

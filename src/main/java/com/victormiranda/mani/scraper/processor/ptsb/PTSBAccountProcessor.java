@@ -1,6 +1,7 @@
 package com.victormiranda.mani.scraper.processor.ptsb;
 
 import com.victormiranda.mani.bean.AccountInfo;
+import com.victormiranda.mani.scraper.bean.LoggedNavigationSession;
 import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.processor.AccountProcessor;
 import com.victormiranda.mani.scraper.processor.BaseProcessor;
@@ -24,10 +25,10 @@ public class PTSBAccountProcessor extends BaseProcessor implements AccountProces
     private static final Logger LOGGER = LoggerFactory.getLogger(PTSBAccountProcessor.class.getName());
 
     @Override
-    public Set<AccountInfo> processAccounts(final NavigationSession navigationSession) {
+    public Set<AccountInfo> processAccounts(final LoggedNavigationSession navigationSession) {
         LOGGER.info("Processing accounts");
 
-        final Document document = parse(PTSBUrl.DASHBOARD.url, Connection.Method.GET, navigationSession);
+        final Document document = navigationSession.getDashboard();
 
         final Elements accountCandidates = document.select(".module-account");
         final Set<AccountInfo> accounts = new HashSet<>(accountCandidates.size());
@@ -40,7 +41,6 @@ public class PTSBAccountProcessor extends BaseProcessor implements AccountProces
                 final String accountNumber = name.substring(name.lastIndexOf(" ") + 1);
                 final BigDecimal availableBalance = BaseProcessor.money(e.select(".funds .fund-1").text());
                 final BigDecimal currentBalance = BaseProcessor.money(e.select(".funds .fund-2").text());
-
 
                 accounts.add(new AccountInfo(name, accountNumber, uid, availableBalance, currentBalance, LocalDate.now(), new HashSet<>()));
             }

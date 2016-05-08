@@ -3,6 +3,7 @@ package com.victormiranda.mani.scraper.processor.ptsb;
 
 import com.victormiranda.mani.bean.Credentials;
 import com.victormiranda.mani.bean.ptsb.PTSBCredentials;
+import com.victormiranda.mani.scraper.bean.LoggedNavigationSession;
 import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.exception.LoginException;
 import com.victormiranda.mani.scraper.processor.BaseProcessor;
@@ -23,7 +24,7 @@ public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor 
     private static final Logger LOG = LoggerFactory.getLogger(PTSBLoginProcessor.class.getName());
 
     @Override
-    public NavigationSession processLogin(final Credentials credentials) throws LoginException {
+    public LoggedNavigationSession processLogin(final Credentials credentials) throws LoginException {
         final PTSBCredentials ptsbCredentials = (PTSBCredentials) credentials;
 
         if (!Validate.notEmpty(ptsbCredentials.getUser(), ptsbCredentials.getPassword(), ptsbCredentials.getPin())) {
@@ -33,9 +34,9 @@ public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor 
         final NavigationSession navigationSession = processToken();
 
         fetchPinDigits(ptsbCredentials, navigationSession);
-        finishLogin(ptsbCredentials, navigationSession);
 
-        return navigationSession;
+
+        return finishLogin(ptsbCredentials, navigationSession);
     }
 
     private NavigationSession processToken()  {
@@ -67,7 +68,7 @@ public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor 
     }
 
 
-    private void finishLogin(PTSBCredentials credentials, final NavigationSession navigationSession) {
+    private LoggedNavigationSession finishLogin(PTSBCredentials credentials, final NavigationSession navigationSession) {
 
         final int[] requestedPin = (int[]) navigationSession.getPrivateParams().get("requested-pin");
 
@@ -77,11 +78,13 @@ public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor 
         navigationSession.getParams().put("login-digit-2", pin[requestedPin[1] - 1]);
         navigationSession.getParams().put("login-digit-3", pin[requestedPin[2] - 1]);
 
-        parse(LOGIN_FINISH.url, Connection.Method.POST, navigationSession);
+        final Document dashboard = parse(LOGIN_FINISH.url, Connection.Method.POST, navigationSession);
 
         navigationSession.getParams().remove("login-digit-1");
         navigationSession.getParams().remove("login-digit-2");
         navigationSession.getParams().remove("login-digit-3");
+
+        return new LoggedNavigationSession(navigationSession, dashboard);
 
     }
 

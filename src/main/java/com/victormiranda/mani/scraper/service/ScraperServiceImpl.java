@@ -4,6 +4,7 @@ package com.victormiranda.mani.scraper.service;
 import com.victormiranda.mani.bean.AccountInfo;
 import com.victormiranda.mani.bean.SynchronizationRequest;
 import com.victormiranda.mani.bean.SynchronizationResult;
+import com.victormiranda.mani.scraper.bean.LoggedNavigationSession;
 import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.exception.LoginException;
 import com.victormiranda.mani.scraper.exception.SynchronizationException;
@@ -42,7 +43,7 @@ public final class ScraperServiceImpl implements ScraperService {
         final AccountProcessor accountProcessor = applicationContext.getBean(scraperProvider.getAccountProcessor());
         final TransactionProcessor transactionProcessor = applicationContext.getBean(scraperProvider.getTramsactionProcessor());
 
-        final NavigationSession navigationSession;
+        final LoggedNavigationSession navigationSession;
 
         try {
             navigationSession = loginProcessor.processLogin(syncRequest.getCredentials());
