@@ -24,6 +24,7 @@ public class BaseProcessor {
         Document parsedDocument = null;
         try {
 
+            LOGGER.info("Request to " + url.toString());
             delay(DEFAULT_DELAY_BETWEEN_REQUESTS);
             final Connection.Response res = Jsoup.connect(url.toString())
                     .followRedirects(true)
