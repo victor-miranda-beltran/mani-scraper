@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 /**
  * @see PTSBUrl
@@ -16,18 +17,18 @@ public class PTSBUrlTest {
     public void testExpandedSyncNeeded() {
         final LocalDate twoMonthsAgo = LocalDate.now().minusMonths(2);
 
-        Assert.assertEquals(PTSBUrl.getURL(twoMonthsAgo), PTSBUrl.ACCOUNT_DETAILS_EXPANDED);
+        Assert.assertEquals(PTSBUrl.getURL(Optional.of(twoMonthsAgo)), PTSBUrl.ACCOUNT_DETAILS_EXPANDED);
     }
 
     @Test
     public void testExpandedSyncNeededNullDate() {
-        Assert.assertEquals(PTSBUrl.getURL(null), PTSBUrl.ACCOUNT_DETAILS_EXPANDED);
+        Assert.assertEquals(PTSBUrl.getURL(Optional.empty()), PTSBUrl.ACCOUNT_DETAILS_EXPANDED);
     }
 
     @Test
     public void testExpandedSyncNotNeeded() {
         final LocalDate twoDaysAgo = LocalDate.now().minusDays(2);
 
-        Assert.assertEquals(PTSBUrl.getURL(twoDaysAgo), PTSBUrl.ACCOUNT_DETAILS);
+        Assert.assertEquals(PTSBUrl.getURL(Optional.of(twoDaysAgo)), PTSBUrl.ACCOUNT_DETAILS);
     }
 }

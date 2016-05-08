@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
@@ -54,13 +55,19 @@ public final class ScraperServiceImpl implements ScraperService {
 
         for (AccountInfo accountInfo : accountsDetected) {
             if (isUpdateNeeded(accountInfo, syncRequest.getAccounts())) {
-                accountInfo.getTransactions().addAll(transactionProcessor.processTransactions(accountInfo, navigationSession));
+                Optional<LocalDate> lastSync = getLastSync(accountInfo, syncRequest.getAccounts());
+                accountInfo.getTransactions().addAll(transactionProcessor.processTransactions(accountInfo, lastSync, navigationSession));
             }
         }
 
         return new SynchronizationResult(accountsDetected, !accountsDetected.isEmpty());
     }
 
+    private Optional<LocalDate> getLastSync(final AccountInfo accountInfo, final Set<AccountInfo> accounts) {
+        final Optional<AccountInfo> knownAccount = accounts.stream().filter(a -> accountInfo.getAccountNumber().equals(a.getAccountNumber())).findFirst();
+
+        return knownAccount.map( a -> a.getLastSynced() );
+    }
 
     private void validateRequest(SynchronizationRequest syncRequest) throws SynchronizationException {
 

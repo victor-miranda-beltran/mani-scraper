@@ -1,8 +1,12 @@
 package com.victormiranda.mani.scraper.type;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.Optional;
 
 public enum PTSBUrl {
     LOGIN_FIRST_STEP_GET("https://www.open24.ie/online/login/"),
@@ -16,6 +20,9 @@ public enum PTSBUrl {
 
     public final URL url;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PTSBUrl.class.getName());
+
+
     PTSBUrl(String url) {
         URL url1;
         try {
@@ -26,8 +33,10 @@ public enum PTSBUrl {
         this.url = url1;
     }
 
-    public static PTSBUrl getURL(final LocalDate lastSync) {
-        return lastSync == null || lastSync.isBefore(LocalDate.now().minusMonths(1))
+    public static PTSBUrl getURL(final Optional<LocalDate> lastSync) {
+        LOGGER.info("Sync with lastSync " + lastSync);
+
+        return !lastSync.isPresent() || lastSync.get().isBefore(LocalDate.now().minusMonths(1))
                 ? PTSBUrl.ACCOUNT_DETAILS_EXPANDED
                 : PTSBUrl.ACCOUNT_DETAILS;
     }

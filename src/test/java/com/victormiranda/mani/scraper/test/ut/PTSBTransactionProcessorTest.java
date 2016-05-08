@@ -22,6 +22,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class PTSBTransactionProcessorTest extends BaseProcessorTest{
@@ -33,14 +34,14 @@ public class PTSBTransactionProcessorTest extends BaseProcessorTest{
 
     @Test
     public void testFetchTransactions() throws SynchronizationException, IOException, LoginException {
-        final List<Transaction> transactions = transactionProcessor.processTransactions(DUMMY_ACCOUNT, navigationSession);
+        final List<Transaction> transactions = transactionProcessor.processTransactions(DUMMY_ACCOUNT, Optional.empty(), navigationSession);
 
         Assert.assertTrue(!transactions.isEmpty());
     }
 
     @Test
     public void testFetchPendingTransactions() throws SynchronizationException, IOException, LoginException {
-        final List<Transaction> transactions = transactionProcessor.processTransactions(DUMMY_ACCOUNT, navigationSession);
+        final List<Transaction> transactions = transactionProcessor.processTransactions(DUMMY_ACCOUNT, Optional.of(LocalDate.now()), navigationSession);
 
         long count = transactions.stream().filter(t -> t.getStatus() == TransactionStatus.PENDING).count();
 
@@ -49,7 +50,7 @@ public class PTSBTransactionProcessorTest extends BaseProcessorTest{
 
     @Test
     public void testDatesProcessedFromDescription() {
-        final List<Transaction> transactions = transactionProcessor.processTransactions(DUMMY_ACCOUNT, navigationSession);
+        final List<Transaction> transactions = transactionProcessor.processTransactions(DUMMY_ACCOUNT, Optional.empty(), navigationSession);
         String transactionUid = "permanenttsb Current695605/04/2016 00:00:00POS NOWTV.COM/BI 02/04 18.850012556.60";
 
         final Transaction transactionWithDateInDescription = transactions.stream()

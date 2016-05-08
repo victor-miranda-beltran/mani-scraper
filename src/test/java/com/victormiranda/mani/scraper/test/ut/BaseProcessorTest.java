@@ -26,7 +26,6 @@ public class BaseProcessorTest {
         mockPages.put(PTSBUrl.LOGIN_FINISH.url, "/ptsb/dashboard.html");
         mockPages.put(PTSBUrl.DASHBOARD.url, "/ptsb/dashboard.html");
         mockPages.put(PTSBUrl.ACCOUNT_DETAILS.url, "/ptsb/account-details.html");
-        mockPages.put(PTSBUrl.ACCOUNT_DETAILS.url, "/ptsb/account-details.html");
         mockPages.put(PTSBUrl.ACCOUNT_DETAILS_EXPANDED.url, "/ptsb/account-details.html");
         mockPages.put(PTSBUrl.ACCOUNT_PENDINGS.url, "/ptsb/pendings.html");
     }
@@ -49,7 +48,7 @@ class ProcessorMock  {
         Document documentFromString = null;
 
         try {
-            final String urlProcessedStr = url.toString().replaceAll("(.*accountId=)(.*)","$1{uid}");
+            final String urlProcessedStr = url.toString().replaceAll("(.*accountId=).[a-z\\-0-9]*(&months=12){0,1}", "$1{uid}$2");
             final URL urlProcessed = new URL(urlProcessedStr);
 
             documentFromString = BaseProcessorTest.getDocumentFromString(BaseProcessorTest.mockPages.get(urlProcessed));

@@ -21,10 +21,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -39,8 +36,8 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
     private static final DateTimeFormatter dateFieldDateFormatter = DateTimeFormatter.ofPattern("dd MMM yy");
 
     @Override
-    public List<Transaction> processTransactions(final AccountInfo accountInfo, final NavigationSession navigationSession) {
-        URL url = PTSBUrl.getURL(accountInfo.getLastSynced()).url;
+    public List<Transaction> processTransactions(final AccountInfo accountInfo, final Optional<LocalDate> lastSync, final NavigationSession navigationSession) {
+        URL url = PTSBUrl.getURL(lastSync).url;
 
         final Map<String, String> accountParam =  new HashMap<>(1);
         accountParam.put("{uid}", accountInfo.getUid());
@@ -72,7 +69,11 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
             final String href = candidate.attr("href");
 
             if (href.contains("PendingTransactions?accountId=") && candidate.text().matches(".*[(][0-9]{1,3}[)]")) {
-                final Document pendingsDoc = parse(PTSBUrl.ACCOUNT_PENDINGS.url, Connection.Method.GET, navigationSession);
+                final Map<String, String> accountUid = new HashMap<>();
+                accountUid.put("{uid}", href.substring("accountId=".length() + href.indexOf("accountId=")));
+
+                URL url = expandURL(expandURL(PTSBUrl.ACCOUNT_PENDINGS.url, accountUid), accountUid);
+                final Document pendingsDoc = parse(url, Connection.Method.GET, navigationSession);
                 final Elements rawTransactions = pendingsDoc.select("table tbody tr");
 
                 pendingTransactions.addAll(
