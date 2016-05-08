@@ -11,6 +11,8 @@ import com.victormiranda.mani.scraper.processor.AccountProcessor;
 import com.victormiranda.mani.scraper.processor.LoginProcessor;
 import com.victormiranda.mani.scraper.processor.TransactionProcessor;
 import com.victormiranda.mani.scraper.type.ScraperProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.Set;
 @Service
 public final class ScraperServiceImpl implements ScraperService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScraperServiceImpl.class.getName());
 
     private final ApplicationContext applicationContext;
 
@@ -85,9 +88,18 @@ public final class ScraperServiceImpl implements ScraperService {
                 .filter(a -> accountInfo.getAccountNumber().equals(a.getAccountNumber()))
                 .findFirst();
 
-        return !knownAccount.isPresent() ||
+        boolean isNeeded = !knownAccount.isPresent() ||
                 !knownAccount.get().getAvailableBalance().equals(accountInfo.getAvailableBalance()) ||
                 !knownAccount.get().getCurrentBalance().equals(accountInfo.getCurrentBalance());
+
+        LOGGER.info("Account " + accountInfo.getName() + " " + isNeeded);
+
+        knownAccount.ifPresent(ac ->        {
+            LOGGER.info("Old balance = " + ac.getAvailableBalance() + " " + ac.getCurrentBalance());
+            LOGGER.info("Old balance = " + accountInfo.getAvailableBalance() + " " + accountInfo.getCurrentBalance());
+        });
+
+        return isNeeded;
     }
 
 }
