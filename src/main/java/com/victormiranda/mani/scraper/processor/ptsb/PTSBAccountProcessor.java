@@ -37,7 +37,8 @@ public class PTSBAccountProcessor extends BaseProcessor implements AccountProces
                 final String name = document.select("option[value=" + uid + "]").first().text();
                 final String accountNumber = name.substring(name.lastIndexOf(" ") + 1);
                 final BigDecimal availableBalance = BaseProcessor.money(e.select(".funds .fund-1").text());
-                final BigDecimal currentBalance = BaseProcessor.money(e.select(".funds .fund-2").text());
+                //.fund-2 also stores payment due in credit card accounts
+                final BigDecimal currentBalance = BaseProcessor.money(e.select(".funds .fund-2").first().text());
 
                 accounts.add(new AccountInfo(name, accountNumber, uid, availableBalance, currentBalance, LocalDate.now(), new HashSet<>()));
             }
