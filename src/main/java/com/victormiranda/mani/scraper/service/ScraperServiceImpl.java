@@ -4,6 +4,7 @@ package com.victormiranda.mani.scraper.service;
 import com.victormiranda.mani.bean.AccountInfo;
 import com.victormiranda.mani.bean.SynchronizationRequest;
 import com.victormiranda.mani.bean.SynchronizationResult;
+import com.victormiranda.mani.bean.Transaction;
 import com.victormiranda.mani.scraper.bean.LoggedNavigationSession;
 import com.victormiranda.mani.scraper.exception.LoginException;
 import com.victormiranda.mani.scraper.exception.SynchronizationException;
@@ -18,6 +19,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -56,12 +59,19 @@ public final class ScraperServiceImpl implements ScraperService {
 
         final Set<AccountInfo> accountsDetected = accountProcessor.processAccounts(navigationSession);
 
-        for (AccountInfo accountInfo : accountsDetected) {
-            if (isUpdateNeeded(accountInfo, syncRequest.getAccounts())) {
-                Optional<LocalDate> lastSync = getLastSync(accountInfo, syncRequest.getAccounts());
-                accountInfo.getTransactions().addAll(transactionProcessor.processTransactions(accountInfo, lastSync, navigationSession));
-            }
-        }
+        accountsDetected.stream()
+                .filter(accountInfo -> isUpdateNeeded(accountInfo, syncRequest.getAccounts()))
+                .forEach(accountInfo -> {
+                    try {
+                        accountInfo.getTransactions().addAll(
+                                transactionProcessor.processTransactions(
+                                    accountInfo,
+                                    getLastSync(accountInfo, syncRequest.getAccounts()),
+                                    navigationSession));
+                    }catch (Exception e) {
+                        LOGGER.error("Error processing transaction accounts", e);
+                    }
+                });
 
         return new SynchronizationResult(accountsDetected, !accountsDetected.isEmpty());
     }
