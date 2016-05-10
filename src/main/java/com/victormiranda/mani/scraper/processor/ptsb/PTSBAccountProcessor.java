@@ -40,7 +40,16 @@ public class PTSBAccountProcessor extends BaseProcessor implements AccountProces
                 //.fund-2 also stores payment due in credit card accounts
                 final BigDecimal currentBalance = BaseProcessor.money(e.select(".funds .fund-2").first().text());
 
-                accounts.add(new AccountInfo(name, accountNumber, uid, availableBalance, currentBalance, LocalDate.now(), new HashSet<>()));
+                accounts.add(
+                    new AccountInfo.Builder()
+                        .withName(name)
+                        .withAccountNumber(accountNumber)
+                        .withAlias(name)
+                        .withUid(uid)
+                        .withAvailableBalance(availableBalance)
+                        .withCurrentBalance(currentBalance)
+                        .withLastSynced(LocalDate.now())
+                        .build());
             }
         }
 

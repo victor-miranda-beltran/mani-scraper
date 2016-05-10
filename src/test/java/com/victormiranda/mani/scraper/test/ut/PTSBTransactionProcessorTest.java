@@ -27,7 +27,12 @@ import java.util.Set;
 
 public class PTSBTransactionProcessorTest extends BaseProcessorTest{
 
-    public static final AccountInfo DUMMY_ACCOUNT = new AccountInfo("dummyAccount", "2134", "1234", BigDecimal.ONE, BigDecimal.ONE, LocalDate.now(), new HashSet<>());
+    public static final AccountInfo DUMMY_ACCOUNT = new AccountInfo.Builder()
+            .withName("dummy account")
+            .withUid("1234")
+            .withAccountNumber("1234")
+            .build();
+
 
     final TransactionProcessor transactionProcessor = new PTSBTransactionProcessorMock();
     final NavigationSession navigationSession = new NavigationSession();
@@ -48,18 +53,6 @@ public class PTSBTransactionProcessorTest extends BaseProcessorTest{
         Assert.assertTrue(count == 9);
     }
 
-    @Test
-    public void testDatesProcessedFromDescription() {
-        final List<Transaction> transactions = transactionProcessor.processTransactions(DUMMY_ACCOUNT, Optional.empty(), navigationSession);
-        String transactionUid = "permanenttsb Current695605/04/2016 00:00:00POS NOWTV.COM/BI 02/04 18.850012556.60";
-
-        final Transaction transactionWithDateInDescription = transactions.stream()
-                .filter(t -> transactionUid.equals(t.getTransactionUID()))
-                .findFirst()
-                .get();
-
-        Assert.assertEquals(transactionWithDateInDescription.getDate(), LocalDate.of(2016,4,2));
-    }
 
 }
 

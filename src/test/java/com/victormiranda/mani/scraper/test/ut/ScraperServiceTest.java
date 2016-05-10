@@ -58,14 +58,7 @@ public class ScraperServiceTest {
 
         final Set<AccountInfo> accounts = new HashSet<>();
 
-        accounts.add(new AccountInfo(
-                "permanenttsb Current - 6956",
-                "6956",
-                "uid",
-                BigDecimal.valueOf(38.29),
-                BigDecimal.valueOf(701.49),
-                LocalDate.now(),
-                Collections.emptySet()));
+        accounts.add(new AccountInfo.Builder().build());
 
         SynchronizationRequest synchronizationRequest = new SynchronizationRequest(
                 BaseProcessorTest.DEMO_CREDENTIALS,

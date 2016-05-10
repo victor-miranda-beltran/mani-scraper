@@ -87,11 +87,9 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
     }
 
     private Transaction getTransaction(final Element e, final TransactionStatus transactionStatus) {
-        final String transactionUID = e.attr("data-uid");
-        final String description = e.select(".desc").text();
+        final String desc = e.select(".desc").text();
         final String valIn = e.select("[data-money=in]").text();
         final String valOut = e.select("[data-money=out]").text();
-
         final TransactionFlow transactionFlow;
         final BigDecimal transactionAm;
 
@@ -103,34 +101,19 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
             transactionAm = BaseProcessor.money(valIn);
         }
 
-        final LocalDate transactionDate = processDate(e.select(".date").text(), description);
+        final LocalDate transactionDate = processDate(e.select(".date").text(), desc);
 
-        return new Transaction(
-                transactionUID, description, transactionDate, transactionFlow, transactionAm, transactionStatus);
+        return new Transaction.Builder()
+                .withUid(e.attr("data-uid"))
+                .withDescription(desc)
+                .withFlow(transactionFlow)
+                .withAmount(transactionAm)
+                .withDate(transactionDate)
+                .withStatus(transactionStatus)
+                .build();
     }
 
     private LocalDate processDate(final String dateFromDateField, final String description) {
-        final LocalDate localDateFromDate =  LocalDate.parse(dateFromDateField, dateFieldDateFormatter);
-
-        if (description == null || description.trim().length() == 0) {
-            return localDateFromDate;
-        }
-
-        final Matcher descriptionMatcher = DESCRIPTION_DATE_PATTERN.matcher(description);
-
-        if (!descriptionMatcher.matches()) {
-            return localDateFromDate;
-        }
-
-        final String dateCleanedFromDescription = descriptionMatcher.group(1) + "/" + localDateFromDate.getYear();
-        final LocalDate localDateFromDesc = LocalDate.parse(dateCleanedFromDescription, descriptionFieldDateFormatter);
-
-        final long differenceBetweenDates = ChronoUnit.DAYS.between(localDateFromDesc, localDateFromDate);
-
-        if (differenceBetweenDates > 0 && differenceBetweenDates < 4) {
-            return localDateFromDesc;
-        }
-
-        return localDateFromDate;
+        return LocalDate.parse(dateFromDateField, dateFieldDateFormatter);
     }
 }
