@@ -1,6 +1,7 @@
 package com.victormiranda.mani.scraper.processor.ptsb;
 
 import com.victormiranda.mani.bean.AccountInfo;
+import com.victormiranda.mani.bean.BaseAccountInfo;
 import com.victormiranda.mani.bean.Transaction;
 import com.victormiranda.mani.scraper.bean.NavigationSession;
 import com.victormiranda.mani.scraper.processor.BaseProcessor;
@@ -20,10 +21,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,9 +29,7 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PTSBTransactionProcessor.class.getName());
 
-    private static final Pattern DESCRIPTION_DATE_PATTERN = Pattern.compile(".*(\\d{2}/\\d{2}).*");
-    private static final DateTimeFormatter descriptionFieldDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private static final DateTimeFormatter dateFieldDateFormatter = DateTimeFormatter.ofPattern("dd MMM yy");
+   private static final DateTimeFormatter dateFieldDateFormatter = DateTimeFormatter.ofPattern("dd MMM yy");
 
     @Override
     public List<Transaction> processTransactions(final AccountInfo accountInfo, final Optional<LocalDate> lastSync, final NavigationSession navigationSession) {
@@ -49,19 +45,19 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
         final Elements rawTransactions = document.select("table.header-big tbody tr");
 
         for (Element e : rawTransactions) {
-            final Transaction transactionProcessed = getTransaction(e, TransactionStatus.NORMAL);
+            final Transaction transactionProcessed = getTransaction(e, accountInfo, TransactionStatus.NORMAL);
 
             LOGGER.info("Processed transaction " + transactionProcessed);
 
             transactions.add(transactionProcessed);
         }
 
-        transactions.addAll(processPendingTransactions(document, navigationSession));
+        transactions.addAll(processPendingTransactions(document, accountInfo, navigationSession));
 
         return transactions;
     }
 
-    private List<Transaction> processPendingTransactions(final Document document, final NavigationSession navigationSession) {
+    private List<Transaction> processPendingTransactions(final Document document, final BaseAccountInfo account, final NavigationSession navigationSession) {
         final List<Transaction> pendingTransactions = new ArrayList<>();
 
         final Elements existentPendingCandidates = document.select(".module-sub-nav a");
@@ -78,7 +74,7 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
 
                 pendingTransactions.addAll(
                         rawTransactions.stream()
-                                .map(e -> getTransaction(e, TransactionStatus.PENDING))
+                                .map(e -> getTransaction(e, account, TransactionStatus.PENDING))
                                 .collect(Collectors.toList()));
             }
         }
@@ -86,7 +82,7 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
         return pendingTransactions;
     }
 
-    private Transaction getTransaction(final Element e, final TransactionStatus transactionStatus) {
+    private Transaction getTransaction(final Element e, final BaseAccountInfo account, final TransactionStatus transactionStatus) {
         final String desc = e.select(".desc").text();
         final String valIn = e.select("[data-money=in]").text();
         final String valOut = e.select("[data-money=out]").text();
@@ -101,11 +97,12 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
             transactionAm = BaseProcessor.money(valIn);
         }
 
-        final LocalDate transactionDate = processDate(e.select(".date").text(), desc);
+        final LocalDate transactionDate = processDate(e.select(".date").text());
 
         return new Transaction.Builder()
                 .withUid(e.attr("data-uid"))
                 .withDescription(desc)
+                .withAccount(account)
                 .withFlow(transactionFlow)
                 .withAmount(transactionAm)
                 .withDate(transactionDate)
@@ -113,7 +110,7 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
                 .build();
     }
 
-    private LocalDate processDate(final String dateFromDateField, final String description) {
+    private LocalDate processDate(final String dateFromDateField) {
         return LocalDate.parse(dateFromDateField, dateFieldDateFormatter);
     }
 }
