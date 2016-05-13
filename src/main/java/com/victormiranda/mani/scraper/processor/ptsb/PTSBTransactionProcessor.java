@@ -86,6 +86,7 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
         final String desc = e.select(".desc").text();
         final String valIn = e.select("[data-money=in]").text();
         final String valOut = e.select("[data-money=out]").text();
+        final BigDecimal balance = BaseProcessor.money(e.select(".currency").last().text());
         final TransactionFlow transactionFlow;
         final BigDecimal transactionAm;
 
@@ -105,6 +106,7 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
                 .withAccount(account)
                 .withFlow(transactionFlow)
                 .withAmount(transactionAm)
+                .withBalance(balance)
                 .withDate(transactionDate)
                 .withStatus(transactionStatus)
                 .build();
