@@ -107,7 +107,7 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
                 .withFlow(transactionFlow)
                 .withAmount(transactionAm)
                 .withBalance(balance)
-                .withDate(transactionDate)
+                .withDateSettled(transactionDate)
                 .withStatus(transactionStatus)
                 .build();
     }

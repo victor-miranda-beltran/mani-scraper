@@ -69,7 +69,6 @@ public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor 
 
 
     private LoggedNavigationSession finishLogin(PTSBCredentials credentials, final NavigationSession navigationSession) {
-
         final int[] requestedPin = (int[]) navigationSession.getPrivateParams().get("requested-pin");
 
         final String[] pin = credentials.getPin().split("");
@@ -85,7 +84,6 @@ public class PTSBLoginProcessor extends BaseProcessor implements LoginProcessor 
         navigationSession.getParams().remove("login-digit-3");
 
         return new LoggedNavigationSession(navigationSession, dashboard);
-
     }
 
     private int getDigit(final Document doc, final int num){
