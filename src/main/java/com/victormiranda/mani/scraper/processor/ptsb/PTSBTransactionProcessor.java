@@ -84,9 +84,20 @@ public class PTSBTransactionProcessor extends BaseProcessor implements Transacti
 
     private Transaction getTransaction(final Element e, final BaseAccountInfo account, final TransactionStatus transactionStatus) {
         final String desc = e.select(".desc").text();
-        final String valIn = e.select("[data-money=in]").text();
-        final String valOut = e.select("[data-money=out]").text();
-        final BigDecimal balance = BaseProcessor.money(e.select(".currency").last().text());
+        final String valIn;
+        final String valOut;
+        final BigDecimal balance;
+
+        if (transactionStatus == TransactionStatus.NORMAL) {
+             valIn = e.select("[data-money=in]").text();
+             valOut = e.select("[data-money=out]").text();
+             balance = BaseProcessor.money(e.select(".currency").last().text());
+        } else {
+            valIn = "";
+            valOut = e.select(".currency").last().text();
+            balance = null;
+        }
+
         final TransactionFlow transactionFlow;
         final BigDecimal transactionAm;
 
